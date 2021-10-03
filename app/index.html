@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Test</title>
+
+    <link rel="stylesheet" href="index.css" media="screen" />
+    <link rel="stylesheet" href="w3.css" media="screen" />
+
+    <script src="/node_modules/pepjs/dist/pep.min.js"></script>
+    <script src="/node_modules/babylonjs/babylon.max.js"></script>
+    <script src="/node_modules/babylonjs-loaders/babylonjs.loaders.min.js"></script>
+    <script src="/node_modules/babylonjs-inspector/babylon.inspector.bundle.js"></script>
+    <script src="assets.js"></script>
+    <script src="/dist/ThumbnailCreator.max.js"></script>
+  </head>
+
+  <body touch-action="none" style="padding: 1em">
+    <h2>Thumbnail Creator</h2>
+    <div style="width: 600px; height: 600px; border-style: solid; border-color: black; border-width: 1px">
+      <canvas id="renderCanvas" style="width: 100%; height: 100%"></canvas>
+    </div>
+    <div id="controls1">
+      <br />
+      <button id="ax">Toggle axes</button>
+      <button id="cl">Clear</button>
+      <button id="ss">ScreenShot</button>
+      <button id="n">next</button>
+      <button id="p">prev</button>
+    </div>
+    <script>
+      new Main().main();
+    </script>
+  </body>
+</html>
