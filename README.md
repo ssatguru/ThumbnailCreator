@@ -1,4 +1,4 @@
-# thumbanail creator
+# thumbnail creator
 
 creates thumbnail for 3d objects.  
 currently only does .obj files  
