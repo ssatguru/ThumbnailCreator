@@ -43,6 +43,7 @@ export class Main {
     }
 
     private action(scene: Scene) {
+        this.createPrimMaterial();
         //let ground = this.addGround(scene);
         this.drawAxis(scene, 3);
         //let box = this.addBox(scene);
@@ -77,7 +78,7 @@ export class Main {
         return ground;
     }
 
-    public addBox(scene): Mesh {
+    public _addBox(scene): Mesh {
         let box = Mesh.CreateBox("box", 1, scene);
         let mat = new StandardMaterial("mat", scene);
         mat.diffuseColor = new Color3(1, 1, 0);
@@ -88,6 +89,49 @@ export class Main {
     }
 
 
+    private primMaterial: StandardMaterial;
+    private prim: Mesh = null;
+    private primName: string;
+    private createPrimMaterial() {
+        this.primMaterial = new StandardMaterial("primMat", this.scene);
+        this.primMaterial.diffuseColor = new Color3(1, 1, 1);
+        this.primMaterial.specularColor = new Color3(0, 0, 0);
+        this.primMaterial.backFaceCulling = false;
+    }
+
+    private createPrim() {
+        if (this.prim != null) this.prim.dispose();
+        if (this.prevMeshes != null) {
+            this.prevMeshes.forEach(mesh => mesh.dispose());
+        }
+        let selection: string = document.getElementsByTagName("select")[0].value;
+        this.primName = selection;
+        switch (selection) {
+            case "box":
+                this.prim = Mesh.CreateBox("box", 1, this.scene);
+                break;
+            case "sphere":
+                this.prim = Mesh.CreateSphere("sphere", 10, 1, this.scene);
+                break;
+            case "cylinder":
+                this.prim = Mesh.CreateCylinder("cyl", 1, 1, 1, 20, 1, this.scene);
+                break;
+            case "cone":
+                this.prim = Mesh.CreateCylinder("cone", 1, 0, 1, 20, 1, this.scene);
+                break;
+            case "torus":
+                this.prim = Mesh.CreateTorus("torus", 1, 0.25, 20, this.scene);
+                break;
+            case "plane":
+                this.prim = Mesh.CreatePlane("plane", 1.0, this.scene);
+                break;
+            case "disc":
+                this.prim = Mesh.CreateDisc("disc", 0.5, 20, this.scene);
+                break;
+        }
+        this.prim.material = this.primMaterial;
+
+    }
 
     firstDone: boolean = false;
 
@@ -100,6 +144,8 @@ export class Main {
         let ss: HTMLButtonElement = <HTMLButtonElement>document.getElementById("ss");
         let n: HTMLButtonElement = <HTMLButtonElement>document.getElementById("n");
         let p: HTMLButtonElement = <HTMLButtonElement>document.getElementById("p");
+        let prims: HTMLSelectElement = <HTMLSelectElement>document.getElementById("prims");
+        let primShot: HTMLButtonElement = <HTMLButtonElement>document.getElementById("primShot");
 
 
         ax.onclick = () => {
@@ -129,6 +175,11 @@ export class Main {
             Tools.CreateScreenshotUsingRenderTarget(this.engine, this.camera, 128, null, this.mimeType, null, true, meshes[this.meshNum] + this.mimeExt);
             this.firstDone = true;
         }
+
+        primShot.onclick = (e) => {
+            Tools.CreateScreenshotUsingRenderTarget(this.engine, this.camera, 128, null, this.mimeType, null, true, this.primName + this.mimeExt);
+            this.firstDone = true;
+        }
         n.onclick = (e) => {
             this.meshNum++;
             this.loadNextMesh();
@@ -136,6 +187,10 @@ export class Main {
         p.onclick = (e) => {
             this.meshNum--;
             this.loadNextMesh();
+        }
+
+        prims.onchange = (e) => {
+            this.createPrim();
         }
 
     }
@@ -153,6 +208,7 @@ export class Main {
         if (this.prevMeshes != null) {
             this.prevMeshes.forEach(mesh => mesh.dispose());
         }
+        if (this.prim != null) this.prim.dispose();
 
         console.log(this.meshNum);
         SceneLoader.ImportMesh("", "assets/", meshes[this.meshNum], this.scene, (mshes, particleSystems, skeletons) => {
